@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SJ Code — Custom C++ IDE & Daily GitHub Auto-Push
 
 SJ Code is a lightweight, web-based C++ development environment designed to replicate VS Code's editor experience with built-in compilation, execution, and automated GitHub daily pushes.
@@ -42,3 +43,6 @@ Or via terminal:
 - `backend/`: Node.js Express server for compilation (`g++`), execution, and Git background cron scheduler.
 - `frontend/`: React + Vite + Monaco Editor UI.
 - `run.bat`: One-click double-clickable batch launcher for Windows.
+=======
+# Dsa_Tracker
+>>>>>>> fd0ebe7fb6a822665886dbf07dc43fd8eb83f979

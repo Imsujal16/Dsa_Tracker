@@ -12,6 +12,12 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Serve Frontend Static Build
+const FRONTEND_DIST = path.join(__dirname, '..', 'frontend', 'dist');
+if (fs.existsSync(FRONTEND_DIST)) {
+  app.use(express.static(FRONTEND_DIST));
+}
+
 // Paths
 const WORKSPACE_DIR = path.join(__dirname, '..', 'workspace');
 const TEMP_DIR = path.join(__dirname, 'temp');
@@ -345,6 +351,17 @@ function setupCronJob() {
 }
 
 setupCronJob();
+
+// Wildcard route for SPA fallback
+app.get('*', (req, res) => {
+  const FRONTEND_DIST = path.join(__dirname, '..', 'frontend', 'dist');
+  const indexHtml = path.join(FRONTEND_DIST, 'index.html');
+  if (fs.existsSync(indexHtml)) {
+    res.sendFile(indexHtml);
+  } else {
+    res.send('SJ Code Backend is running. Frontend build not found.');
+  }
+});
 
 // Start Server
 app.listen(PORT, () => {

@@ -4,6 +4,16 @@
 
 ---
 
+## 🖼️ Application Screenshots
+
+### 1. Monaco Code Editor & Workspace
+![SJ Code IDE Preview](assets/sj_code_ide_preview.png)
+
+### 2. Output Console & Real-time Git Sync Status
+![Git Sync Log Preview](assets/git_sync_preview.png)
+
+---
+
 ## 🔥 Features
 
 - 🎨 **VS Code Editor Engine:** Built with Monaco Editor (`vs-dark` theme, C++ syntax highlighting, auto-formatting, line numbers, and tab completion).
@@ -88,8 +98,12 @@ We have included easy scripts so you don't have to manage command line windows:
 
 ```text
 SJ Code/
+├── assets/                     # Screenshots and UI media
+│   ├── sj_code_ide_preview.png
+│   └── git_sync_preview.png
 ├── workspace/                  # Your C++ source files (auto-synced to GitHub)
 │   ├── main.cpp
+│   ├── Lecture1.cpp
 │   └── dsa_test.cpp
 ├── backend/                    # Node.js + Express backend
 │   ├── server.js               # Compiler API, execution handler, Git cron job

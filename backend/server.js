@@ -212,40 +212,70 @@ async function performGitSync(customCommitMsg) {
     const rootDir = path.join(__dirname, '..');
     const config = getConfig();
 
-    // Check if git is initialized
-    const commands = [
-      'git init',
-      'git add .',
-      `git commit -m "${customCommitMsg || `Daily Auto-Push: ${new Date().toLocaleString()}`}"`
-    ];
-
-    if (config.repoUrl) {
-      // Check if remote origin already exists
-      exec('git remote -v', { cwd: rootDir }, (err, stdout) => {
-        if (!stdout.includes('origin')) {
-          commands.push(`git remote add origin ${config.repoUrl}`);
-        } else if (config.repoUrl) {
-          commands.push(`git remote set-url origin ${config.repoUrl}`);
-        }
-        commands.push('git branch -M main');
-        commands.push('git push -u origin main');
-
-        executeGitSequence(commands, rootDir, resolve);
+    // Helper function to run shell commands in sequence
+    const runCmd = (cmd) => new Promise((res) => {
+      exec(cmd, { cwd: rootDir }, (err, stdout, stderr) => {
+        res({ err, stdout: stdout.trim(), stderr: stderr.trim() });
       });
-    } else {
-      executeGitSequence(commands, rootDir, resolve);
-    }
-  });
-}
+    });
 
-function executeGitSequence(cmds, cwd, resolve) {
-  const fullCmd = cmds.join(' && ');
-  exec(fullCmd, { cwd }, (err, stdout, stderr) => {
-    if (err && !stdout.includes('nothing to commit')) {
-      resolve({ success: false, log: stderr || err.message, output: stdout });
-    } else {
-      resolve({ success: true, log: stdout || 'Git sync completed successfully.' });
-    }
+    (async () => {
+      let logs = [];
+
+      // 1. Ensure Git repository initialized
+      const initRes = await runCmd('git init');
+      if (initRes.stdout) logs.push(initRes.stdout);
+
+      // 2. Configure Remote URL if specified in config or check existing origin
+      let targetRepo = config.repoUrl;
+      const remoteRes = await runCmd('git remote get-url origin');
+      if (!remoteRes.err && remoteRes.stdout) {
+        targetRepo = targetRepo || remoteRes.stdout;
+      }
+
+      if (targetRepo) {
+        if (remoteRes.err) {
+          await runCmd(`git remote add origin ${targetRepo}`);
+        } else {
+          await runCmd(`git remote set-url origin ${targetRepo}`);
+        }
+      }
+
+      // 3. Stage files
+      await runCmd('git add .');
+
+      // 4. Commit changes (handle "nothing to commit" gracefully)
+      const commitMsg = customCommitMsg || `Auto-commit: C++ Code Update [${new Date().toLocaleString()}]`;
+      const commitRes = await runCmd(`git commit -m "${commitMsg}"`);
+      if (commitRes.stdout) logs.push(commitRes.stdout);
+
+      // 5. If remote repository is configured, pull & push!
+      if (targetRepo) {
+        await runCmd('git branch -M main');
+        
+        // Pull remote changes first to prevent push rejection
+        const pullRes = await runCmd('git pull origin main --rebase');
+        if (pullRes.stdout) logs.push(pullRes.stdout);
+
+        // Push to remote main branch
+        const pushRes = await runCmd('git push -u origin main');
+        if (pushRes.err && !pushRes.stderr.includes('Everything up-to-date')) {
+          logs.push(`Push Note/Error: ${pushRes.stderr || pushRes.err.message}`);
+          resolve({
+            success: false,
+            log: logs.join('\n\n') || 'Push failed. Please check repository permissions or network.'
+          });
+          return;
+        } else {
+          logs.push(pushRes.stderr || pushRes.stdout || 'Everything up-to-date on GitHub!');
+        }
+      }
+
+      resolve({
+        success: true,
+        log: logs.filter(Boolean).join('\n\n') || 'Git sync completed successfully.'
+      });
+    })();
   });
 }
 

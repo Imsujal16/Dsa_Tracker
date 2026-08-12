@@ -2,7 +2,6 @@
 using namespace std;
 
 int main() {
-    cout << "Welcome to SJ Code Editor!" << endl;
-    cout << "Lecture 1" << endl;
+    cout << "Welcome to SJ Code C++ IDE!" << endl;
     return 0;
 }

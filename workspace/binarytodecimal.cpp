@@ -18,7 +18,7 @@ int binarytodecimal(int n)
 }
 int main() {
     // Solution for binarytodecimal.cpp
-    int n=1010;
+    int n=10101;
    
     cout <<binarytodecimal(n)<< endl;
     return 0;

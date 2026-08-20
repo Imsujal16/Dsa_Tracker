@@ -7,9 +7,10 @@ int binarytodecimal(int n)
     while(n>0)
     {   
         int ld=n%10;
-        
+        if(ld==1)
+        {
         ans+=pow(2,i); 
-        
+        }
         n/=10;
         i++;
     }

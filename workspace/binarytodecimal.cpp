@@ -7,10 +7,9 @@ int binarytodecimal(int n)
     while(n>0)
     {   
         int ld=n%10;
-        if(ld==1)
-        {
+        
         ans+=pow(2,i); 
-        }
+        
         n/=10;
         i++;
     }
@@ -18,7 +17,7 @@ int binarytodecimal(int n)
 }
 int main() {
     // Solution for binarytodecimal.cpp
-    int n=10101;
+    int n=1010;
    
     cout <<binarytodecimal(n)<< endl;
     return 0;

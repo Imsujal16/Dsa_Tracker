@@ -8,7 +8,7 @@ int dtob(int n)
     {
         int bit=n&1;
         ans=bit*pow(10,i)+ans;
-        n>>=1;
+        n/=2;
         i++;
     }
     return ans;
@@ -16,7 +16,7 @@ int dtob(int n)
 
 int main() {
     // Solution for decimaltobinaryconversion.cpp
-    int n=5;
+    int n=10;
     cout<<dtob(n);
 
     return 0;

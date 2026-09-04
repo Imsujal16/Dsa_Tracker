@@ -6,18 +6,19 @@ int findunique(vector<int> arr)
     int size=arr.size();
     for(int i=0; i<size; i++)
     {   int count=0;
-        for(int j=i+1; j<size; j++)
+        for(int j=0; j<size; j++)
         {
             if(arr[i]==arr[j])
             {
                 count++;
             }
         }
-         if(count==0)
+         if(count==1)
             {
-                return i;
+                return arr[i];
             }
     }
+    return -1;
 
 }
 int main() {

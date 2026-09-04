@@ -4,7 +4,6 @@ using namespace std;
 int findunique(vector<int> arr)
 {
     int size=arr.size();
-    
     for(int i=0; i<size; i++)
     {   int count=0;
         for(int j=i+1; j<size; j++)
@@ -13,11 +12,11 @@ int findunique(vector<int> arr)
             {
                 count++;
             }
-            if(count==0)
+        }
+         if(count==0)
             {
                 return i;
             }
-        }
     }
 
 }
